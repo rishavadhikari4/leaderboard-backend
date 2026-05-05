@@ -75,7 +75,7 @@ app.post("/add_nest_invoice_payment", async (req, res) => {
       return res.status(400).json({ error: "Missing encryption key" });
     }
 
-    if (encryptionKey !== process.env.WHMCS_ENCRYPTION) {
+    if (encryptionKey !== process.env.NEST_WHMCS_ENCRYPTION) {
       return res.status(401).json({ error: "Invalid encryption key" });
     }
 
@@ -88,8 +88,8 @@ app.post("/add_nest_invoice_payment", async (req, res) => {
         },
         body: new URLSearchParams({
           action: "GetInvoice",
-          identifier: process.env.WHMCS_IDENTIFIER,
-          secret: process.env.WHMCS_SECRET,
+          identifier: process.env.NEST_WHMCS_IDENTIFIER,
+          secret: process.env.NEST_WHMCS_SECRET,
           responsetype: "json",
           invoiceid: invoiceId,
         }),
@@ -113,8 +113,8 @@ app.post("/add_nest_invoice_payment", async (req, res) => {
         },
         body: new URLSearchParams({
           action: "GetAdminUsers",
-          identifier: process.env.WHMCS_IDENTIFIER,
-          secret: process.env.WHMCS_SECRET,
+          identifier: process.env.NEST_WHMCS_IDENTIFIER,
+          secret: process.env.NEST_WHMCS_SECRET,
           responsetype: "json",
         }),
       },
@@ -189,7 +189,7 @@ app.post("/add_babal_invoice_payment", async (req, res) => {
       return res.status(400).json({ error: "Missing encryption key" });
     }
 
-    if (encryptionKey !== process.env.WHMCS_ENCRYPTION) {
+    if (encryptionKey !== process.env.BABAL_WHMCS_ENCRYPTION) {
       return res.status(401).json({ error: "Invalid encryption key" });
     }
 
@@ -202,8 +202,8 @@ app.post("/add_babal_invoice_payment", async (req, res) => {
         },
         body: new URLSearchParams({
           action: "GetInvoice",
-          identifier: process.env.WHMCS_IDENTIFIER,
-          secret: process.env.WHMCS_SECRET,
+          identifier: process.env.BABAL_WHMCS_IDENTIFIER,
+          secret: process.env.BABAL_WHMCS_SECRET,
           responsetype: "json",
           invoiceid: invoiceId,
         }),
@@ -227,8 +227,8 @@ app.post("/add_babal_invoice_payment", async (req, res) => {
         },
         body: new URLSearchParams({
           action: "GetAdminUsers",
-          identifier: process.env.WHMCS_IDENTIFIER,
-          secret: process.env.WHMCS_SECRET,
+          identifier: process.env.BABAL_WHMCS_IDENTIFIER,
+          secret: process.env.BABAL_WHMCS_SECRET,
           responsetype: "json",
         }),
       },
