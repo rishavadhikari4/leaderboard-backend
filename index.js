@@ -10,16 +10,22 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = [
+  ...(process.env.CORS_ORIGINS ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://leaderboard.frontend.nest.net.np",
+  "https://leaderboard-frontend-opal.vercel.app",
+];
+
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:3001",
-      "https://leadeboard.frontend.nest.net.np",
-      "https://leaderboard-frontend-opal.vercel.app",
-    ],
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -27,12 +33,7 @@ const io = new Server(server, {
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:3001",
-      "https://leadeboard.frontend.nest.net.np",
-      "https://leaderboard-frontend-opal.vercel.app",
-    ],
+    origin: allowedOrigins,
     credentials: true,
   }),
 );
