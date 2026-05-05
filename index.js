@@ -353,7 +353,7 @@ app.post("/add_sms_invoice_payment", async (req, res) => {
     if (!admin) {
       return res.status(404).json({ error: "Admin not found" });
     }
-
+    console.log(invoiceData.invoices)
     if (invoiceData.invoices.status !== "paid") {
       return res.status(400).json({ error: "Invoice is not paid" });
     }
