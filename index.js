@@ -19,7 +19,7 @@ const allowedOrigins = [
   "http://localhost:3001",
   "https://leaderboard.frontend.nest.net.np",
   "https://leaderboard-frontend-opal.vercel.app",
-  "https://leaderboard-frontend-23pcdckgx-rishavadhikari4s-projects.vercel.app"
+  "https://leaderboard-frontend-23pcdckgx-rishavadhikari4s-projects.vercel.app",
 ];
 
 const server = http.createServer(app);
@@ -356,7 +356,7 @@ app.post("/add_sms_invoice_payment", async (req, res) => {
     if (!admin) {
       return res.status(404).json({ error: "Admin not found" });
     }
-    console.log(invoiceData.invoices)
+    console.log(invoiceData.invoices);
     if (invoiceData.invoices.status !== "paid") {
       return res.status(400).json({ error: "Invoice is not paid" });
     }
@@ -433,6 +433,91 @@ app.post("/get_today_invoice_payments", async (req, res) => {
       },
     });
     res.status(200).json(transactions);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error", message: error });
+  }
+});
+
+app.post("/get_monthly_invoice_payments", async (req, res) => {
+  try {
+    console.log("Received request for monthly invoice payments");
+    const { frontendEncryptionKey, year, month } = req.body;
+
+    if (!frontendEncryptionKey) {
+      return res.status(400).json({ error: "Missing encryption key" });
+    }
+
+    if (frontendEncryptionKey !== process.env.FRONTEND_ENCRYPTION) {
+      return res.status(401).json({ error: "Invalid encryption key" });
+    }
+
+    const NPT_OFFSET_MINUTES = 5 * 60 + 45;
+    const nptOffsetMs = NPT_OFFSET_MINUTES * 60 * 1000;
+    const now = new Date();
+    const nptNow = new Date(now.getTime() + nptOffsetMs);
+
+    const resolvedYear =
+      year != null ? Number(year) : Number(nptNow.getFullYear());
+    const resolvedMonth =
+      month != null ? Number(month) : Number(nptNow.getMonth() + 1);
+
+    if (
+      !Number.isInteger(resolvedYear) ||
+      !Number.isInteger(resolvedMonth) ||
+      resolvedMonth < 1 ||
+      resolvedMonth > 12
+    ) {
+      return res.status(400).json({
+        error: "Invalid month/year",
+        message: "Pass month as 1-12 and year as integer",
+      });
+    }
+
+    const monthIndex = resolvedMonth - 1;
+
+    const nptStart = new Date(resolvedYear, monthIndex, 1);
+    const nptEnd = new Date(resolvedYear, monthIndex + 1, 1);
+
+    const startOfMonth = new Date(nptStart.getTime() - nptOffsetMs);
+    const endOfMonth = new Date(nptEnd.getTime() - nptOffsetMs);
+
+    const topAdmins = await Transaction_model.aggregate([
+      {
+        $match: {
+          date: {
+            $gte: startOfMonth,
+            $lt: endOfMonth,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            admin_id: "$admin_id",
+            admin_name: "$admin_name",
+          },
+          total_amount: { $sum: "$amount" },
+          transaction_count: { $sum: 1 },
+        },
+      },
+      { $sort: { total_amount: -1 } },
+      { $limit: 10 },
+      {
+        $project: {
+          _id: 0,
+          admin_id: "$_id.admin_id",
+          admin_name: "$_id.admin_name",
+          total_amount: 1,
+          transaction_count: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      month: resolvedMonth,
+      year: resolvedYear,
+      topAdmins,
+    });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error", message: error });
   }
