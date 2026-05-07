@@ -152,6 +152,7 @@ app.post("/add_nest_invoice_payment", async (req, res) => {
       invoice_id: invoiceId,
       source: "nest",
       admin_id: adminID,
+      admin_name: admin.fullName,
       amount: closestTransaction.amountin,
     };
 
@@ -194,7 +195,7 @@ app.post("/add_babal_invoice_payment", async (req, res) => {
     }
 
     const invoiceDataRequest = await fetch(
-      `https://myaccount.nestwebhost.com/includes/api.php?timestamp=${Date.now()}`,
+      `https://clients.babal.host/includes/api.php?timestamp=${Date.now()}`,
       {
         method: "POST",
         headers: {
@@ -219,7 +220,7 @@ app.post("/add_babal_invoice_payment", async (req, res) => {
     }
 
     const adminDataRequest = await fetch(
-      `https://myaccount.nestwebhost.com/includes/api.php?timestamp=${Date.now()}`,
+      `https://clients.babal.host/includes/api.php?timestamp=${Date.now()}`,
       {
         method: "POST",
         headers: {
@@ -266,6 +267,7 @@ app.post("/add_babal_invoice_payment", async (req, res) => {
       invoice_id: invoiceId,
       source: "babal",
       admin_id: adminID,
+      admin_name: admin.fullName,
       amount: closestTransaction.amountin,
     };
 
