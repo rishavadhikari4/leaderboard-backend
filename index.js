@@ -304,7 +304,7 @@ app.post("/add_sms_invoice_payment", async (req, res) => {
     }
 
     const invoiceDataRequest = await fetch(
-      `https://auth.dev.nestsms.com/api/public/get-invoice`,
+      `https://auth.nestsms.com/api/public/get-invoice`,
       {
         method: "POST",
         headers: {
@@ -329,7 +329,7 @@ app.post("/add_sms_invoice_payment", async (req, res) => {
     }
 
     const adminDataRequest = await fetch(
-      `https://auth.dev.nestsms.com/api/public/get-admins`,
+      `https://auth.nestsms.com/api/public/get-admins`,
       {
         method: "POST",
         headers: {
