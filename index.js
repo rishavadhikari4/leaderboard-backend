@@ -19,6 +19,7 @@ const allowedOrigins = [
   "http://localhost:3001",
   "https://leaderboard.frontend.nest.net.np",
   "https://leaderboard-frontend-opal.vercel.app",
+  "https://leaderboard-frontend-23pcdckgx-rishavadhikari4s-projects.vercel.app"
 ];
 
 const server = http.createServer(app);
